@@ -25,6 +25,7 @@ class GlowRingLayer extends maptalks.Layer {
             //this.ringList.push(rings);
             this._ringList[uid] = rings;
             rings._uid = uid;
+            uid++;
             const renderer = this._getRenderer();
             if (renderer) {
                 //如果createContext执行过，则直接创建scene

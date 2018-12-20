@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/maptalks/maptalks.glowring.git"
   },
-  "main": "dist/maptalks.glowring.js",
+  "main": "dist/maptalks.glowring-dev.js",
   "scripts": {
     "dev": "rollup -w -c rollup.config.js",
     "build": "rollup --environment BUILD:production -c rollup.config.js",

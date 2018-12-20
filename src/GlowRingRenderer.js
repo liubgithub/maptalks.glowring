@@ -155,8 +155,8 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
             const shaderItem = this._shaderList[shaderName];
             //如果marker没有uniforms，则使用注册shader时对应的uniforms, this._uniforms是诸如viewprojMatrix
             time += 0.01;
-            shaderItem.uniforms.iTime = time;
-            const markerUniforms = maptalks.Util.extend({}, ring.getUniforms(), shaderItem.uniforms);
+            const markerUniforms = maptalks.Util.extend({}, shaderItem.uniforms, ring.getUniforms());
+            markerUniforms.iTime = time;
             const uniforms = maptalks.Util.extend({}, markerUniforms, this._uniforms);
             ring.setUniforms(uniforms);
             // console.log(marker._modelMatrix);
@@ -251,6 +251,9 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
                 'iResolution',
                 'iTime',
                 'center',
+                'iRadius',
+                'iColor',
+                'iSpeed',
                 {
                     name : 'projViewModelMatrix',
                     type : 'function',
@@ -285,7 +288,10 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
         const uniforms = {
             'iResolution':[map.width, map.height],
             'iTime':time,
-            'center' : [0, 0, 0]
+            'center' : [0, 0, 0],
+            'iRadius' : 1.0,
+            'iColor' : [1.0, 0.0, 0.0],
+            'iSpeed' : 3.0
         };
         return { shader, uniforms };
     }
@@ -302,7 +308,7 @@ function defined(obj) {
     return !isNil(obj);
 }
 
-function coordinateToWorld(map, coordinate, z = 0.5) {
+function coordinateToWorld(map, coordinate, z = 0.1) {
     if (!map) {
         return null;
     }

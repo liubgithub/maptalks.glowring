@@ -44,7 +44,7 @@ export default class GlowRing extends Eventable(Handlerable(Class)) {
     }
 
     getScale() {
-        const scale = this.options.scale;
+        const scale = this.options.scale || 1.0;
         return [scale, scale, scale];
     }
 
@@ -54,6 +54,21 @@ export default class GlowRing extends Eventable(Handlerable(Class)) {
 
     setShader(name) {
         this.options.shader = name;
+        return this;
+    }
+
+    setColor(color) {
+        this.options.uniforms.iColor = color;
+        return this;
+    }
+
+    setSpeed(speed) {
+        this.options.uniforms.iSpeed = speed;
+        return this;
+    }
+
+    setRadius(radius) {
+        this.options.uniforms.iRadius = radius;
         return this;
     }
 
