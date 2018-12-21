@@ -25,6 +25,7 @@ class GlowRingLayer extends maptalks.Layer {
             //this.ringList.push(rings);
             this._ringList[uid] = rings;
             rings._uid = uid;
+            rings.options.iTime = 0.0;
             uid++;
             const renderer = this._getRenderer();
             if (renderer) {

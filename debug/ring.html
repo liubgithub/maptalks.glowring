@@ -41,12 +41,21 @@
 var center = map.getCenter();
  var glowringLayer = new maptalks.GlowRingLayer('glowring').addTo(map);
  var ring = new maptalks.GlowRing(map.getCenter()).addTo(glowringLayer);
+ 
  var ring1 = new maptalks.GlowRing(center.add(0.01,0)).addTo(glowringLayer);
  ring1.setColor([0.1,0.9,0.1]);
- ring1.setSpeed(4.0);
+ ring1.setRadius(0.5);
+ ring1.setSpeed(2.0);
  var ring2 = new maptalks.GlowRing(center.add(0,0.01)).addTo(glowringLayer);
  ring2.setColor([0.1,0.2,0.8]);
- ring1.setSpeed(2.0);
+ ring2.setRadius(2.0);
+ ring1.setSpeed(5.0);
+ setTimeout(function(){
+    var ring3 = new maptalks.GlowRing(center.add(0.02,0.01)).addTo(glowringLayer);
+    ring3.setColor([0.2,0.5,0.7]);
+    ring3.setSpeed(1.0);
+ }, 5000);
+ 
   </script>
 </body>
 

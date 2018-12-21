@@ -4,9 +4,7 @@ import { intersectsBox } from 'frustum-intersects';
 import vert from './glsl/ring.vert';
 import frag from './glsl/ring.frag';
 
-let time = 0;
-
-class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
+class GlowRingRenderer extends maptalks.renderer.CanvasRenderer {
 
     draw() {
         //time = timestamp;
@@ -106,7 +104,8 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
         const position = coordinateToWorld(this.layer.getMap(), ring.getCoordinates());
         const transformMat = mat4.identity([]);
         mat4.translate(transformMat, transformMat, position);
-        mat4.scale(transformMat, transformMat, ring.getScale());
+        //默认scale为3.0
+        mat4.scale(transformMat, transformMat, [3.0, 3.0, 3.0]);
         ringMesh.setLocalTransform(transformMat);
         const scene = new reshader.Scene(ringMesh);
         ring._scene = scene;
@@ -154,9 +153,9 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
             }
             const shaderItem = this._shaderList[shaderName];
             //如果marker没有uniforms，则使用注册shader时对应的uniforms, this._uniforms是诸如viewprojMatrix
-            time += 0.01;
             const markerUniforms = maptalks.Util.extend({}, shaderItem.uniforms, ring.getUniforms());
-            markerUniforms.iTime = time;
+            markerUniforms.iTime += 0.01;
+            markerUniforms.iRadius = ring.getRadius();
             const uniforms = maptalks.Util.extend({}, markerUniforms, this._uniforms);
             ring.setUniforms(uniforms);
             // console.log(marker._modelMatrix);
@@ -193,7 +192,7 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
         const position = coordinateToWorld(this.layer.getMap(), ring.getCoordinates());
         const transformMat = mat4.identity([]);
         mat4.translate(transformMat, transformMat, position);
-        mat4.scale(transformMat, transformMat, ring.getScale());
+        mat4.scale(transformMat, transformMat, [3.0, 3.0, 3.0]);
         meshes.forEach(mesh => {
             mesh.setLocalTransform(transformMat);
         });
@@ -287,7 +286,7 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
         };
         const uniforms = {
             'iResolution':[map.width, map.height],
-            'iTime':time,
+            'iTime':0.0,
             'center' : [0, 0, 0],
             'iRadius' : 1.0,
             'iColor' : [1.0, 0.0, 0.0],
@@ -297,7 +296,7 @@ class TriplineRenderer extends maptalks.renderer.CanvasRenderer {
     }
 }
 
-export default TriplineRenderer;
+export default GlowRingRenderer;
 
 function isNil(obj) {
     return obj === null || obj === undefined;
