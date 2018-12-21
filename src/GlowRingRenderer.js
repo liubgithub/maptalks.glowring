@@ -155,7 +155,6 @@ class GlowRingRenderer extends maptalks.renderer.CanvasRenderer {
             //如果marker没有uniforms，则使用注册shader时对应的uniforms, this._uniforms是诸如viewprojMatrix
             const markerUniforms = maptalks.Util.extend({}, shaderItem.uniforms, ring.getUniforms());
             markerUniforms.iTime += 0.01;
-            markerUniforms.iRadius = ring.getRadius();
             const uniforms = maptalks.Util.extend({}, markerUniforms, this._uniforms);
             ring.setUniforms(uniforms);
             // console.log(marker._modelMatrix);

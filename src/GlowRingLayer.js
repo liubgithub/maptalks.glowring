@@ -57,6 +57,13 @@ class GlowRingLayer extends maptalks.Layer {
             renderer._deleteAll();
         }
     }
+
+    registerSahder(name, type, config, uniforms) {
+        const renderer = this._getRenderer();
+        if (renderer) {
+            renderer._registerShader(name, type, config, uniforms);
+        }
+    }
 }
 
 GlowRingLayer.mergeOptions(options);
