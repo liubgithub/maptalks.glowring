@@ -1,7 +1,8 @@
 import { Class, Eventable, Handlerable } from 'maptalks';
 
 const options = {
-    scale : 1.0
+    scale : 1.0,
+    isVisible : true
 };
 
 const vertices = [-1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0];
@@ -27,6 +28,19 @@ export default class GlowRing extends Eventable(Handlerable(Class)) {
         if (this._layer) {
             this._layer.removeRings(this);
         }
+    }
+
+    show() {
+        this.options.isVisible = true;
+        return this;
+    }
+    //15527334376
+    hide() {
+        this.options.isVisible = false;
+    }
+
+    isVisible() {
+        return this.options.isVisible;
     }
 
     getCoordinates() {

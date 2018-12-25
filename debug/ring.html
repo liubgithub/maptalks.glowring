@@ -151,6 +151,10 @@ var center = map.getCenter();
  var radar = new maptalks.GlowRing(center.add(0.015, 0.01), {
    shader:'radar'
  }).addTo(glowringLayer);
+ //10秒后隐藏ring2，用来测试hide、show方法
+ setTimeout(() => {
+     ring2.hide();
+ }, 10*1000);
   </script>
 </body>
 

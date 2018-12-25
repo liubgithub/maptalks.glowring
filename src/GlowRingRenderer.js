@@ -141,6 +141,9 @@ class GlowRingRenderer extends maptalks.renderer.CanvasRenderer {
     _renderScene() {
         for (const uid in this.layer._ringList) {
             const ring = this.layer._ringList[uid];
+            if (!ring.isVisible()) {
+                continue;
+            }
             this._updateSceneMatrix(ring);
             const toRenderScene = this._createSceneInFrustum(ring._scene);
             if (!toRenderScene) {
