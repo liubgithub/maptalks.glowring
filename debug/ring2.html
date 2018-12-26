@@ -53,47 +53,42 @@ var vert = `#ifdef GL_ES
        vec4 worldPos = modelMatrix * vec4(aPosition, 1.0);
        v_FragPos = worldPos.xyz;
        v_center = (modelMatrix * vec4(center, 1.0)).xyz;
-    }`;
-
+    }
+`;
 var frag = `
 #ifdef GL_ES
-    precision highp float;
+   precision highp float;
 #endif
-#define L length(c - .1*vec3(    // use: L x,y,z))  
-#define M(v)   max(0., v)
+#define pi 3.14159
+const float dotsnb = 30.0; // Number of dots
 
 varying vec3 v_FragPos;
 varying vec3 v_center;
-uniform vec2 iResolution;
 uniform float iTime;
 uniform float iRadius;
+uniform vec3 iColor;
+uniform float iSpeed;
+
 void main()
 {
-    vec3 c = v_FragPos - v_center;
-    vec3 k = 0.1 - 0.1 * step(0.007,abs(c));
-    float x = L 0))*20., // x,y - polar coords
-          y = mod(atan(c.y, c.x) + iTime, 6.28),
-          d = M(.75 - y * .4),
-          b = min( min(L -3,-1,v_center.z)), L 6,-4,v_center.z)) ), L 4,5,v_center.z)) )
-        	+ .06 - y *.04;
-    float red = b<.08 ? b * M(18.-13.*y) : .0;
-    float blue = (x<iRadius*6.0 ? 0.25 +  M( cos(x+.8) -.95 ) * iRadius*0.6 + k.x*1.5 + k.y*1.5 + d * d+ M(.8 - y * (x+x+.3) ) :0.)+ M(1. - abs(x+x-iRadius*12.0));
-    vec4 O1 = vec4(
-        red ,0.1, blue, x < iRadius*6.0 ? (red + 0.0 + blue) / 0.5 : 0.0);
-    vec4 O2 = vec4(
-        red ,blue, 0.0, x < iRadius*6.0 ? (red + 0.0 + blue) / 0.5 : 0.0);
-    gl_FragColor = O1*0.8+O2*0.3;
-}
-`;
+    float time = iTime * iSpeed;
+    float radius = iRadius + 0.04 * sin(time);
+    float thickness = 0.12 + 0.08 * cos(time);
+    float dist = length(v_FragPos - v_center);
+    float blue = smoothstep(thickness/1.5, 0., abs(dist-radius));
+    gl_FragColor = vec4(0.2,0.1,blue,blue);
+}`;
 const shader = {
             vert,
             frag,
             // 着色器程序中的uniform变量
             uniforms : [
-                'iResolution',
+            'iResolution',
                 'iTime',
                 'center',
                 'iRadius',
+                'iColor',
+                'iSpeed',
                 {
                     name : 'projViewModelMatrix',
                     type : 'function',
@@ -125,39 +120,24 @@ const shader = {
                 }
             }
         };
-        const uniforms = {
-            'iResolution':[map.width, map.height],
-            'iTime':0.0,
-            'center' : [0, 0, 0],
-            'iRadius' : 6.0
-        };
+       
 var center = map.getCenter();
  var glowringLayer = new maptalks.GlowRingLayer('glowring').addTo(map);
- glowringLayer.registerShader('radar', 'MeshShader', shader, uniforms);
- var ring = new maptalks.GlowRing(map.getCenter()).addTo(glowringLayer);
- 
- var ring1 = new maptalks.GlowRing(center.add(0.01,0)).addTo(glowringLayer);
- ring1.setColor([0.1,0.9,0.1]);
- ring1.setRadius(0.5);
- ring1.setSpeed(2.0);
- var ring2 = new maptalks.GlowRing(center.add(0,0.01)).addTo(glowringLayer);
- ring2.setColor([0.1,0.2,0.8]);
- ring2.setRadius(2.0);
- ring1.setSpeed(5.0);
- setTimeout(function(){
-    var ring3 = new maptalks.GlowRing(center.add(0.02,0.01)).addTo(glowringLayer);
-    ring3.setColor([0.2,0.5,0.7]);
-    ring3.setSpeed(1.0);
- }, 5000);
- 
- var radar = new maptalks.GlowRing(center.add(0.015, 0.01), {
-   shader:'radar'
+ glowringLayer.registerShader('singleCircle', 'MeshShader', shader);
+ for(var i=0;i<5;i++){
+  const uniforms = {
+            'iTime':0.0,
+            'center' : [0, 0, 0],
+            'iRadius' : 0.5 + i*0.25,
+            'iColor' : [1.0, 0.0, 0.0],
+            'iSpeed' : 3.0
+        };
+  var ring = new maptalks.GlowRing(map.getCenter(),{
+   shader:'singleCircle',
+   uniforms : uniforms
  }).addTo(glowringLayer);
- //10秒后隐藏ring2，用来测试hide、show方法
- setTimeout(() => {
-     ring2.hide();
-     radar.setRadius(7.0);
- }, 10*1000);
+ ring.setHeight(5-i);
+ }
   </script>
 </body>
 

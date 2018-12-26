@@ -101,11 +101,11 @@ class GlowRingRenderer extends maptalks.renderer.CanvasRenderer {
         //方便实际绘制时，不再重复拷贝数据 (bufferData)
         geometry.generateBuffers(this.regl);
         const ringMesh = new reshader.Mesh(geometry);
-        const position = coordinateToWorld(this.layer.getMap(), ring.getCoordinates());
+        const position = coordinateToWorld(this.layer.getMap(), ring.getCoordinates(), ring.getHeight());
         const transformMat = mat4.identity([]);
         mat4.translate(transformMat, transformMat, position);
         //默认scale为3.0
-        mat4.scale(transformMat, transformMat, [3.0, 3.0, 3.0]);
+        mat4.scale(transformMat, transformMat, [5.0, 5.0, 5.0]);
         ringMesh.setLocalTransform(transformMat);
         const scene = new reshader.Scene(ringMesh);
         ring._scene = scene;
@@ -191,10 +191,10 @@ class GlowRingRenderer extends maptalks.renderer.CanvasRenderer {
 
     _updateSceneMatrix(ring) {
         const meshes = ring._scene.getMeshes();
-        const position = coordinateToWorld(this.layer.getMap(), ring.getCoordinates());
+        const position = coordinateToWorld(this.layer.getMap(), ring.getCoordinates(), ring.getHeight());
         const transformMat = mat4.identity([]);
         mat4.translate(transformMat, transformMat, position);
-        mat4.scale(transformMat, transformMat, [3.0, 3.0, 3.0]);
+        mat4.scale(transformMat, transformMat, [5.0, 5.0, 5.0]);
         meshes.forEach(mesh => {
             mesh.setLocalTransform(transformMat);
         });
@@ -212,6 +212,7 @@ class GlowRingRenderer extends maptalks.renderer.CanvasRenderer {
             this._disposeMesh(this.layer._ringList[uid]);
         }
         this.layer._ringList = {};
+        this.layer._rings = [];
         this.setToRedraw();
     }
 
@@ -309,7 +310,7 @@ function defined(obj) {
     return !isNil(obj);
 }
 
-function coordinateToWorld(map, coordinate, z = 0.1) {
+function coordinateToWorld(map, coordinate, z) {
     if (!map) {
         return null;
     }

@@ -14,6 +14,7 @@ class GlowRingLayer extends maptalks.Layer {
     constructor(id, options) {
         super(id, options);
         this._ringList = {};
+        this._rings = [];
     }
 
     addRings(rings) {
@@ -24,6 +25,7 @@ class GlowRingLayer extends maptalks.Layer {
         } else {
             //this.ringList.push(rings);
             this._ringList[uid] = rings;
+            this._rings.push(rings);
             rings._uid = uid;
             rings.options.iTime = 0.0;
             uid++;
@@ -51,6 +53,10 @@ class GlowRingLayer extends maptalks.Layer {
         }
     }
 
+    getAll() {
+        return this._rings;
+    }
+
     clear() {
         const renderer = this._getRenderer();
         if (renderer) {
@@ -58,7 +64,7 @@ class GlowRingLayer extends maptalks.Layer {
         }
     }
 
-    registerSahder(name, type, config, uniforms) {
+    registerShader(name, type, config, uniforms) {
         const renderer = this._getRenderer();
         if (renderer) {
             renderer._registerShader(name, type, config, uniforms);

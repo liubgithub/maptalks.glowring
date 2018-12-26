@@ -12,7 +12,9 @@ export default class GlowRing extends Eventable(Handlerable(Class)) {
     constructor(coordinates,  options) {
         //options增加shader字段
         super(options);
-        this.options.uniforms = this.options.uniforms || {};
+        const uniforms = this.options.uniforms || {};
+        this.options.uniforms = JSON.parse(JSON.stringify(uniforms));
+        //this.options.uniforms.iRadius = 6.0;
         this._coordinates = coordinates;
         this._vertices = vertices;
         this._indices = indiecs;
@@ -50,6 +52,15 @@ export default class GlowRing extends Eventable(Handlerable(Class)) {
     setCoordinates(coordinates) {
         this._coordinates = coordinates;
         return this;
+    }
+
+    setHeight(height) {
+        this.options.height = height;
+        return this;
+    }
+
+    getHeight() {
+        return this.options.height || 0.1;
     }
 
     getShader() {
